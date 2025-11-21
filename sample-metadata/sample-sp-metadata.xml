@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<md:EntityDescriptor xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata"
+                     validUntil="2034-01-01T00:00:00Z"
+                     entityID="http://example-sp.com">
+  <md:SPSSODescriptor AuthnRequestsSigned="true" WantAssertionsSigned="true"
+                      protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
+    <md:KeyDescriptor use="signing">
+      <ds:KeyInfo xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+        <ds:X509Data>
+          <ds:X509Certificate>MIIDEzCCAfugAwIBAgIJAKoSA4hTYhKWMA0GCSqGSIb3DQEBCwUAMCAxHjAcBgNVBAMTFWV4YW1wbGUtc3AuY29tL2Nkbi1jZ2kwHhcNMjQwMTAxMDAwMDAwWhcNMzQwMTAxMDAwMDAwWjAgMR4wHAYDVQQDExVleGFtcGxlLXNwLmNvbS9jZG4tY2dpMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAwp4Kh6WN</ds:X509Certificate>
+        </ds:X509Data>
+      </ds:KeyInfo>
+    </md:KeyDescriptor>
+    <md:SingleLogoutService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST"
+                           Location="http://example-sp.com/saml/slo" />
+    <md:NameIDFormat>urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress</md:NameIDFormat>
+    <md:AssertionConsumerService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST"
+                                Location="http://example-sp.com/saml/acs"
+                                index="1" isDefault="true" />
+  </md:SPSSODescriptor>
+</md:EntityDescriptor>

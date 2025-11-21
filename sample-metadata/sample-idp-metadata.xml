@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<md:EntityDescriptor xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata"
+                     validUntil="2034-01-01T00:00:00Z"
+                     entityID="http://example-idp.com">
+  <md:IDPSSODescriptor WantAuthnRequestsSigned="false"
+                       protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
+    <md:KeyDescriptor use="signing">
+      <ds:KeyInfo xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+        <ds:X509Data>
+          <ds:X509Certificate>MIIDEzCCAfugAwIBAgIJAKoSA4hTYhKWMA0GCSqGSIb3DQEBCwUAMCAxHjAcBgNVBAMTFWV4YW1wbGUtaWRwLmNvbS9jZG4tY2dpMB4XDTI0MDEwMTAwMDAwMFoXDTM0MDEwMTAwMDAwMFowIDEeMBwGA1UEAxMVZXhhbXBsZS1pZHAuY29tL2Nkbi1jZ2kwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDCngqHpY0</ds:X509Certificate>
+        </ds:X509Data>
+      </ds:KeyInfo>
+    </md:KeyDescriptor>
+    <md:SingleLogoutService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST"
+                           Location="http://example-idp.com/saml/slo" />
+    <md:NameIDFormat>urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress</md:NameIDFormat>
+    <md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST"
+                           Location="http://example-idp.com/saml/sso" />
+    <md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect"
+                           Location="http://example-idp.com/saml/sso" />
+  </md:IDPSSODescriptor>
+</md:EntityDescriptor>
