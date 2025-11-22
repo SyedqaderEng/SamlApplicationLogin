@@ -154,7 +154,7 @@ export const createLoginResponse = async (
     };
 
     // Create login response
-    const result: any = idp.createLoginResponse(
+    const result: any = (idp as any).createLoginResponse(
       sp,
       {
         extract: {
@@ -164,7 +164,7 @@ export const createLoginResponse = async (
         },
       },
       'post',
-      user.email, // NameID
+      { email: user.email }, // NameID as object
       attributes
     );
 
