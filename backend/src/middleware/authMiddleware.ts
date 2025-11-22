@@ -17,7 +17,7 @@ export const authenticate = (req: AuthRequest, res: Response, next: NextFunction
     const decoded = verifyToken(token);
 
     req.user = decoded;
-    next();
+return next();
   } catch (error) {
     return res.status(401).json({ error: 'Invalid or expired token' });
   }
@@ -32,9 +32,9 @@ export const optionalAuth = (req: AuthRequest, _res: Response, next: NextFunctio
       const decoded = verifyToken(token);
       req.user = decoded;
     }
-    next();
+return next();
   } catch (_error) {
     // Token is invalid, but we allow the request to continue
-    next();
+return next();
   }
 };

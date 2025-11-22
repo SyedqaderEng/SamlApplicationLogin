@@ -46,7 +46,7 @@ router.post(
       // Generate JWT
       const token = generateToken({ userId: user.id, email: user.email });
 
-      res.status(201).json({
+      return res.status(201).json({
         message: 'User created successfully',
         token,
         user: {
@@ -99,7 +99,7 @@ router.post(
       // Generate JWT
       const token = generateToken({ userId: user.id, email: user.email });
 
-      res.json({
+      return res.json({
         message: 'Login successful',
         token,
         user: {
@@ -139,7 +139,7 @@ router.get('/me', authenticate, async (req: AuthRequest, res: Response) => {
       return res.status(404).json({ error: 'User not found' });
     }
 
-    res.json({ user });
+    return res.json({ user });
   } catch (error) {
     console.error('Get user error:', error);
     return res.status(500).json({ error: 'Internal server error' });
@@ -155,7 +155,7 @@ router.get('/me/saml-logs', authenticate, async (req: AuthRequest, res: Response
       take: 10,
     });
 
-    res.json({ logs });
+    return res.json({ logs });
   } catch (error) {
     console.error('Get SAML logs error:', error);
     return res.status(500).json({ error: 'Internal server error' });

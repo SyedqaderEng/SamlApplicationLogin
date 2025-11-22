@@ -21,7 +21,7 @@ router.get('/', authenticate, async (_req: Request, res: Response) => {
     }
 
     // Don't expose private keys in response
-    res.json({
+return res.json({
       config: {
         id: config.id,
         appRole: config.appRole,
@@ -75,7 +75,7 @@ router.put(
         });
       }
 
-      res.json({
+return res.json({
         message: 'Configuration updated successfully',
         config: {
           id: config.id,
@@ -118,7 +118,7 @@ router.get('/logs', authenticate, async (req: AuthRequest, res: Response) => {
 
     const total = await prisma.samlLog.count({ where });
 
-    res.json({
+return res.json({
       logs,
       pagination: {
         total,
@@ -151,7 +151,7 @@ router.get('/logs/:id', authenticate, async (req: Request, res: Response) => {
       return res.status(404).json({ error: 'Log entry not found' });
     }
 
-    res.json({ log });
+return res.json({ log });
   } catch (error) {
     console.error('Get log error:', error);
     return res.status(500).json({ error: 'Failed to get log entry' });
@@ -163,7 +163,7 @@ router.delete('/logs', authenticate, async (_req: Request, res: Response) => {
   try {
     const result = await prisma.samlLog.deleteMany({});
 
-    res.json({
+return res.json({
       message: 'Logs cleared successfully',
       deletedCount: result.count,
     });
