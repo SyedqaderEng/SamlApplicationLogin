@@ -1,9 +1,10 @@
 import { Router, Request, Response } from 'express';
 import { body, validationResult } from 'express-validator';
 import prisma from '../config/database';
-import { authenticate, AuthRequest } from '../middleware/authMiddleware';
-import { parseMetadata, generateSpMetadata, generateIdpMetadata } from '../saml/metadata';
-import { getSpMetadata, getIdpMetadata } from '../saml/samlSp';
+import { authenticate } from '../middleware/authMiddleware';
+import { parseMetadata } from '../saml/metadata';
+import { getSpMetadata } from '../saml/samlSp';
+import { getIdpMetadata } from '../saml/samlIdp';
 import { getCertificateFingerprint } from '../saml/certificates';
 
 const router = Router();
@@ -45,7 +46,7 @@ router.post(
           data: {
             type: parsed.type,
             rawXml: xml,
-            parsedJson: parsed,
+            parsedJson: JSON.parse(JSON.stringify(parsed)),
             ssoUrl: parsed.ssoUrl,
             sloUrl: parsed.sloUrl,
             acsUrls: parsed.acsUrls,
@@ -60,7 +61,7 @@ router.post(
             type: parsed.type,
             entityId: parsed.entityId,
             rawXml: xml,
-            parsedJson: parsed,
+            parsedJson: JSON.parse(JSON.stringify(parsed)),
             ssoUrl: parsed.ssoUrl,
             sloUrl: parsed.sloUrl,
             acsUrls: parsed.acsUrls,
@@ -89,13 +90,13 @@ router.post(
       });
     } catch (error: any) {
       console.error('Import metadata error:', error);
-      res.status(500).json({ error: error.message || 'Failed to import metadata' });
+      return res.status(500).json({ error: error.message || 'Failed to import metadata' });
     }
   }
 );
 
 // Get all entities
-router.get('/entities', authenticate, async (req: Request, res: Response) => {
+router.get('/entities', authenticate, async (_req: Request, res: Response) => {
   try {
     const entities = await prisma.samlEntity.findMany({
       orderBy: { createdAt: 'desc' },
@@ -118,7 +119,7 @@ router.get('/entities', authenticate, async (req: Request, res: Response) => {
     res.json({ entities: entitiesWithFingerprints });
   } catch (error) {
     console.error('Get entities error:', error);
-    res.status(500).json({ error: 'Failed to get entities' });
+    return res.status(500).json({ error: 'Failed to get entities' });
   }
 });
 
@@ -143,31 +144,31 @@ router.get('/entities/:id', authenticate, async (req: Request, res: Response) =>
     });
   } catch (error) {
     console.error('Get entity error:', error);
-    res.status(500).json({ error: 'Failed to get entity' });
+    return res.status(500).json({ error: 'Failed to get entity' });
   }
 });
 
 // Export SP metadata
-router.get('/export/sp', async (req: Request, res: Response) => {
+router.get('/export/sp', async (_req: Request, res: Response) => {
   try {
     const metadata = await getSpMetadata();
     res.set('Content-Type', 'application/xml');
     res.send(metadata);
   } catch (error) {
     console.error('Export SP metadata error:', error);
-    res.status(500).json({ error: 'Failed to export SP metadata' });
+    return res.status(500).json({ error: 'Failed to export SP metadata' });
   }
 });
 
 // Export IdP metadata
-router.get('/export/idp', async (req: Request, res: Response) => {
+router.get('/export/idp', async (_req: Request, res: Response) => {
   try {
     const metadata = await getIdpMetadata();
     res.set('Content-Type', 'application/xml');
     res.send(metadata);
   } catch (error) {
     console.error('Export IdP metadata error:', error);
-    res.status(500).json({ error: 'Failed to export IdP metadata' });
+    return res.status(500).json({ error: 'Failed to export IdP metadata' });
   }
 });
 
@@ -181,7 +182,7 @@ router.delete('/entities/:id', authenticate, async (req: Request, res: Response)
     res.json({ message: 'Entity deleted successfully' });
   } catch (error) {
     console.error('Delete entity error:', error);
-    res.status(500).json({ error: 'Failed to delete entity' });
+    return res.status(500).json({ error: 'Failed to delete entity' });
   }
 });
 
@@ -204,7 +205,7 @@ router.patch('/entities/:id/toggle', authenticate, async (req: Request, res: Res
     res.json({ entity: updated });
   } catch (error) {
     console.error('Toggle entity error:', error);
-    res.status(500).json({ error: 'Failed to toggle entity' });
+    return res.status(500).json({ error: 'Failed to toggle entity' });
   }
 });
 

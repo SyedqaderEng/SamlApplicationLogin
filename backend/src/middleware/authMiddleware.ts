@@ -23,7 +23,7 @@ export const authenticate = (req: AuthRequest, res: Response, next: NextFunction
   }
 };
 
-export const optionalAuth = (req: AuthRequest, res: Response, next: NextFunction) => {
+export const optionalAuth = (req: AuthRequest, _res: Response, next: NextFunction) => {
   try {
     const authHeader = req.headers.authorization;
 
@@ -33,7 +33,7 @@ export const optionalAuth = (req: AuthRequest, res: Response, next: NextFunction
       req.user = decoded;
     }
     next();
-  } catch (error) {
+  } catch (_error) {
     // Token is invalid, but we allow the request to continue
     next();
   }

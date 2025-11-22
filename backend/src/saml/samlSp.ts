@@ -100,9 +100,12 @@ export const createAuthnRequest = async (idpEntityId: string): Promise<{ context
 
     const idp = samlify.IdentityProvider({ metadata: idpEntity.rawXml });
 
-    const { context, entityEndpoint } = sp.createLoginRequest(idp, 'redirect');
+    const result: any = sp.createLoginRequest(idp, 'redirect');
 
-    return { context, entityEndpoint };
+    return {
+      context: result.context || result.id,
+      entityEndpoint: result.entityEndpoint || idpEntity.ssoUrl || ''
+    };
   } catch (error) {
     console.error('Error creating AuthnRequest:', error);
     throw error;
