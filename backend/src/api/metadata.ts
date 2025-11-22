@@ -76,7 +76,7 @@ router.post(
         getCertificateFingerprint(cert)
       );
 
-      res.json({
+return res.json({
         message: 'Metadata imported successfully',
         entity: {
           id: entity.id,
@@ -102,7 +102,7 @@ router.get('/entities', authenticate, async (_req: Request, res: Response) => {
       orderBy: { createdAt: 'desc' },
     });
 
-    const entitiesWithFingerprints = entities.map((entity) => ({
+    const entitiesWithFingerprints = entities.map((entity: any) => ({
       id: entity.id,
       type: entity.type,
       entityId: entity.entityId,
@@ -111,12 +111,12 @@ router.get('/entities', authenticate, async (_req: Request, res: Response) => {
       acsUrls: entity.acsUrls,
       active: entity.active,
       createdAt: entity.createdAt,
-      certificateFingerprints: entity.certificates.map((cert) =>
+      certificateFingerprints: entity.certificates.map((cert: string) =>
         getCertificateFingerprint(cert)
       ),
     }));
 
-    res.json({ entities: entitiesWithFingerprints });
+return res.json({ entities: entitiesWithFingerprints });
   } catch (error) {
     console.error('Get entities error:', error);
     return res.status(500).json({ error: 'Failed to get entities' });
@@ -134,10 +134,10 @@ router.get('/entities/:id', authenticate, async (req: Request, res: Response) =>
       return res.status(404).json({ error: 'Entity not found' });
     }
 
-    res.json({
+return res.json({
       entity: {
         ...entity,
-        certificateFingerprints: entity.certificates.map((cert) =>
+        certificateFingerprints: entity.certificates.map((cert: string) =>
           getCertificateFingerprint(cert)
         ),
       },
@@ -153,7 +153,7 @@ router.get('/export/sp', async (_req: Request, res: Response) => {
   try {
     const metadata = await getSpMetadata();
     res.set('Content-Type', 'application/xml');
-    res.send(metadata);
+return res.send(metadata);
   } catch (error) {
     console.error('Export SP metadata error:', error);
     return res.status(500).json({ error: 'Failed to export SP metadata' });
@@ -165,7 +165,7 @@ router.get('/export/idp', async (_req: Request, res: Response) => {
   try {
     const metadata = await getIdpMetadata();
     res.set('Content-Type', 'application/xml');
-    res.send(metadata);
+return res.send(metadata);
   } catch (error) {
     console.error('Export IdP metadata error:', error);
     return res.status(500).json({ error: 'Failed to export IdP metadata' });
@@ -179,7 +179,7 @@ router.delete('/entities/:id', authenticate, async (req: Request, res: Response)
       where: { id: req.params.id },
     });
 
-    res.json({ message: 'Entity deleted successfully' });
+return res.json({ message: 'Entity deleted successfully' });
   } catch (error) {
     console.error('Delete entity error:', error);
     return res.status(500).json({ error: 'Failed to delete entity' });
@@ -202,7 +202,7 @@ router.patch('/entities/:id/toggle', authenticate, async (req: Request, res: Res
       data: { active: !entity.active },
     });
 
-    res.json({ entity: updated });
+return res.json({ entity: updated });
   } catch (error) {
     console.error('Toggle entity error:', error);
     return res.status(500).json({ error: 'Failed to toggle entity' });

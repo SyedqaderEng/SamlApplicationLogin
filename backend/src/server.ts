@@ -34,7 +34,7 @@ app.use(cookieParser());
 
 // Health check
 app.get('/health', (_req: Request, res: Response) => {
-  res.json({ status: 'ok', timestamp: new Date().toISOString() });
+return res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
 // Auth routes
@@ -57,7 +57,7 @@ app.get('/saml/metadata', async (_req: Request, res: Response) => {
     const metadata = sp.getMetadata();
 
     res.set('Content-Type', 'application/xml');
-    res.send(metadata);
+return res.send(metadata);
   } catch (error) {
     console.error('SP metadata error:', error);
     return res.status(500).json({ error: 'Failed to generate SP metadata' });
@@ -88,7 +88,7 @@ app.get('/saml/login', async (req: Request, res: Response) => {
     });
 
     // Redirect to IdP
-    res.redirect(entityEndpoint);
+return res.redirect(entityEndpoint);
   } catch (error: any) {
     console.error('SP login error:', error);
 
@@ -116,15 +116,15 @@ app.post('/saml/acs', async (req: Request, res: Response) => {
       // Return the token in a way that the frontend can capture it
       // In production, you might want to set a cookie or redirect with the token
       const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
-      res.redirect(`${frontendUrl}/saml/callback?token=${result.token}`);
+return res.redirect(`${frontendUrl}/saml/callback?token=${result.token}`);
     } else {
       const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
-      res.redirect(`${frontendUrl}/saml/callback?error=${encodeURIComponent(result.error || 'Unknown error')}`);
+return res.redirect(`${frontendUrl}/saml/callback?error=${encodeURIComponent(result.error || 'Unknown error')}`);
     }
   } catch (error: any) {
     console.error('ACS error:', error);
     const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
-    res.redirect(`${frontendUrl}/saml/callback?error=${encodeURIComponent(error.message)}`);
+return res.redirect(`${frontendUrl}/saml/callback?error=${encodeURIComponent(error.message)}`);
   }
 });
 
@@ -140,7 +140,7 @@ app.post('/saml/slo', async (req: Request, res: Response) => {
       },
     });
 
-    res.json({ message: 'Logged out successfully' });
+return res.json({ message: 'Logged out successfully' });
   } catch (error) {
     console.error('SLO error:', error);
     return res.status(500).json({ error: 'Logout failed' });
@@ -158,7 +158,7 @@ app.get('/saml/idp/metadata', async (_req: Request, res: Response) => {
     const metadata = idp.getMetadata();
 
     res.set('Content-Type', 'application/xml');
-    res.send(metadata);
+return res.send(metadata);
   } catch (error) {
     console.error('IdP metadata error:', error);
     return res.status(500).json({ error: 'Failed to generate IdP metadata' });
@@ -184,7 +184,7 @@ app.get('/saml/idp/sso', async (req: Request, res: Response) => {
 
     // Redirect to login page
     const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
-    res.redirect(`${frontendUrl}/idp-login${requestId ? `?requestId=${requestId}` : ''}`);
+return res.redirect(`${frontendUrl}/idp-login${requestId ? `?requestId=${requestId}` : ''}`);
   } catch (error) {
     console.error('IdP SSO error:', error);
     return res.status(500).json({ error: 'SSO failed' });
@@ -209,7 +209,7 @@ app.post('/saml/idp/sso', async (req: Request, res: Response) => {
 
     // Redirect to login page
     const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
-    res.redirect(`${frontendUrl}/idp-login${requestId ? `?requestId=${requestId}` : ''}`);
+return res.redirect(`${frontendUrl}/idp-login${requestId ? `?requestId=${requestId}` : ''}`);
   } catch (error) {
     console.error('IdP SSO POST error:', error);
     return res.status(500).json({ error: 'SSO failed' });
@@ -295,7 +295,7 @@ app.post('/saml/idp/login', optionalAuth, async (req: AuthRequest, res: Response
     const acsUrl = spEntity.acsUrls[0];
     const relayState = req.cookies.saml_relay_state || '';
 
-    res.send(`
+return res.send(`
       <!DOCTYPE html>
       <html>
       <head>
@@ -341,7 +341,7 @@ app.post('/saml/idp/slo', async (req: Request, res: Response) => {
       },
     });
 
-    res.json({ message: 'Logged out successfully' });
+return res.json({ message: 'Logged out successfully' });
   } catch (error) {
     console.error('IdP SLO error:', error);
     return res.status(500).json({ error: 'Logout failed' });
