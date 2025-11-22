@@ -60,7 +60,7 @@ app.get('/saml/metadata', async (_req: Request, res: Response) => {
     res.send(metadata);
   } catch (error) {
     console.error('SP metadata error:', error);
-    res.status(500).json({ error: 'Failed to generate SP metadata' });
+    return res.status(500).json({ error: 'Failed to generate SP metadata' });
   }
 });
 
@@ -103,7 +103,7 @@ app.get('/saml/login', async (req: Request, res: Response) => {
       },
     });
 
-    res.status(500).json({ error: error.message || 'SAML login failed' });
+    return res.status(500).json({ error: error.message || 'SAML login failed' });
   }
 });
 
@@ -129,7 +129,7 @@ app.post('/saml/acs', async (req: Request, res: Response) => {
 });
 
 // SLO - Single Logout
-app.post('/saml/slo', async (_req: Request, res: Response) => {
+app.post('/saml/slo', async (req: Request, res: Response) => {
   try {
     // Log logout
     await prisma.samlLog.create({
@@ -143,7 +143,7 @@ app.post('/saml/slo', async (_req: Request, res: Response) => {
     res.json({ message: 'Logged out successfully' });
   } catch (error) {
     console.error('SLO error:', error);
-    res.status(500).json({ error: 'Logout failed' });
+    return res.status(500).json({ error: 'Logout failed' });
   }
 });
 
@@ -161,7 +161,7 @@ app.get('/saml/idp/metadata', async (_req: Request, res: Response) => {
     res.send(metadata);
   } catch (error) {
     console.error('IdP metadata error:', error);
-    res.status(500).json({ error: 'Failed to generate IdP metadata' });
+    return res.status(500).json({ error: 'Failed to generate IdP metadata' });
   }
 });
 
@@ -187,7 +187,7 @@ app.get('/saml/idp/sso', async (req: Request, res: Response) => {
     res.redirect(`${frontendUrl}/idp-login${requestId ? `?requestId=${requestId}` : ''}`);
   } catch (error) {
     console.error('IdP SSO error:', error);
-    res.status(500).json({ error: 'SSO failed' });
+    return res.status(500).json({ error: 'SSO failed' });
   }
 });
 
@@ -212,7 +212,7 @@ app.post('/saml/idp/sso', async (req: Request, res: Response) => {
     res.redirect(`${frontendUrl}/idp-login${requestId ? `?requestId=${requestId}` : ''}`);
   } catch (error) {
     console.error('IdP SSO POST error:', error);
-    res.status(500).json({ error: 'SSO failed' });
+    return res.status(500).json({ error: 'SSO failed' });
   }
 });
 
@@ -326,12 +326,12 @@ app.post('/saml/idp/login', optionalAuth, async (req: AuthRequest, res: Response
       },
     });
 
-    res.status(500).json({ error: error.message || 'IdP login failed' });
+    return res.status(500).json({ error: error.message || 'IdP login failed' });
   }
 });
 
 // IdP SLO - Single Logout
-app.post('/saml/idp/slo', async (_req: Request, res: Response) => {
+app.post('/saml/idp/slo', async (req: Request, res: Response) => {
   try {
     await prisma.samlLog.create({
       data: {
@@ -344,7 +344,7 @@ app.post('/saml/idp/slo', async (_req: Request, res: Response) => {
     res.json({ message: 'Logged out successfully' });
   } catch (error) {
     console.error('IdP SLO error:', error);
-    res.status(500).json({ error: 'Logout failed' });
+    return res.status(500).json({ error: 'Logout failed' });
   }
 });
 
@@ -354,7 +354,7 @@ app.use((_req: Request, res: Response) => {
 });
 
 // Error handler
-app.use((err: any, req: Request, res: Response, next: any) => {
+app.use((err: any, _req: Request, res: Response, _next: any) => {
   console.error('Server error:', err);
   res.status(500).json({ error: 'Internal server error' });
 });
