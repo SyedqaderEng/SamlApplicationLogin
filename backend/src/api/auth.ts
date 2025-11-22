@@ -57,7 +57,7 @@ router.post(
       });
     } catch (error) {
       console.error('Signup error:', error);
-      res.status(500).json({ error: 'Internal server error' });
+      return res.status(500).json({ error: 'Internal server error' });
     }
   }
 );
@@ -113,7 +113,7 @@ router.post(
       });
     } catch (error) {
       console.error('Login error:', error);
-      res.status(500).json({ error: 'Internal server error' });
+      return res.status(500).json({ error: 'Internal server error' });
     }
   }
 );
@@ -142,7 +142,7 @@ router.get('/me', authenticate, async (req: AuthRequest, res: Response) => {
     res.json({ user });
   } catch (error) {
     console.error('Get user error:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    return res.status(500).json({ error: 'Internal server error' });
   }
 });
 
@@ -158,7 +158,7 @@ router.get('/me/saml-logs', authenticate, async (req: AuthRequest, res: Response
     res.json({ logs });
   } catch (error) {
     console.error('Get SAML logs error:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    return res.status(500).json({ error: 'Internal server error' });
   }
 });
 

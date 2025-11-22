@@ -6,7 +6,7 @@ import { authenticate, AuthRequest } from '../middleware/authMiddleware';
 const router = Router();
 
 // Get SAML config
-router.get('/', authenticate, async (req: Request, res: Response) => {
+router.get('/', authenticate, async (_req: Request, res: Response) => {
   try {
     let config = await prisma.samlConfig.findFirst();
 
@@ -34,7 +34,7 @@ router.get('/', authenticate, async (req: Request, res: Response) => {
     });
   } catch (error) {
     console.error('Get config error:', error);
-    res.status(500).json({ error: 'Failed to get configuration' });
+    return res.status(500).json({ error: 'Failed to get configuration' });
   }
 });
 
@@ -87,7 +87,7 @@ router.put(
       });
     } catch (error) {
       console.error('Update config error:', error);
-      res.status(500).json({ error: 'Failed to update configuration' });
+      return res.status(500).json({ error: 'Failed to update configuration' });
     }
   }
 );
@@ -128,7 +128,7 @@ router.get('/logs', authenticate, async (req: AuthRequest, res: Response) => {
     });
   } catch (error) {
     console.error('Get logs error:', error);
-    res.status(500).json({ error: 'Failed to get logs' });
+    return res.status(500).json({ error: 'Failed to get logs' });
   }
 });
 
@@ -154,12 +154,12 @@ router.get('/logs/:id', authenticate, async (req: Request, res: Response) => {
     res.json({ log });
   } catch (error) {
     console.error('Get log error:', error);
-    res.status(500).json({ error: 'Failed to get log entry' });
+    return res.status(500).json({ error: 'Failed to get log entry' });
   }
 });
 
 // Clear logs
-router.delete('/logs', authenticate, async (req: Request, res: Response) => {
+router.delete('/logs', authenticate, async (_req: Request, res: Response) => {
   try {
     const result = await prisma.samlLog.deleteMany({});
 
@@ -169,7 +169,7 @@ router.delete('/logs', authenticate, async (req: Request, res: Response) => {
     });
   } catch (error) {
     console.error('Clear logs error:', error);
-    res.status(500).json({ error: 'Failed to clear logs' });
+    return res.status(500).json({ error: 'Failed to clear logs' });
   }
 });
 

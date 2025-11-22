@@ -33,7 +33,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
 // Health check
-app.get('/health', (req: Request, res: Response) => {
+app.get('/health', (_req: Request, res: Response) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
@@ -51,7 +51,7 @@ app.use('/api/config', configRoutes);
 // ===================
 
 // SP Metadata
-app.get('/saml/metadata', async (req: Request, res: Response) => {
+app.get('/saml/metadata', async (_req: Request, res: Response) => {
   try {
     const sp = await getSp();
     const metadata = sp.getMetadata();
@@ -73,7 +73,7 @@ app.get('/saml/login', async (req: Request, res: Response) => {
       return res.status(400).json({ error: 'idpEntityId query parameter is required' });
     }
 
-    const { context, entityEndpoint } = await createAuthnRequest(idpEntityId as string);
+    const { entityEndpoint } = await createAuthnRequest(idpEntityId as string);
 
     // Log the login attempt
     await prisma.samlLog.create({
@@ -129,7 +129,7 @@ app.post('/saml/acs', async (req: Request, res: Response) => {
 });
 
 // SLO - Single Logout
-app.post('/saml/slo', async (req: Request, res: Response) => {
+app.post('/saml/slo', async (_req: Request, res: Response) => {
   try {
     // Log logout
     await prisma.samlLog.create({
@@ -152,7 +152,7 @@ app.post('/saml/slo', async (req: Request, res: Response) => {
 // ===================
 
 // IdP Metadata
-app.get('/saml/idp/metadata', async (req: Request, res: Response) => {
+app.get('/saml/idp/metadata', async (_req: Request, res: Response) => {
   try {
     const idp = await getIdp();
     const metadata = idp.getMetadata();
@@ -331,7 +331,7 @@ app.post('/saml/idp/login', optionalAuth, async (req: AuthRequest, res: Response
 });
 
 // IdP SLO - Single Logout
-app.post('/saml/idp/slo', async (req: Request, res: Response) => {
+app.post('/saml/idp/slo', async (_req: Request, res: Response) => {
   try {
     await prisma.samlLog.create({
       data: {
@@ -349,7 +349,7 @@ app.post('/saml/idp/slo', async (req: Request, res: Response) => {
 });
 
 // 404 handler
-app.use((req: Request, res: Response) => {
+app.use((_req: Request, res: Response) => {
   res.status(404).json({ error: 'Not found' });
 });
 

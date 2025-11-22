@@ -105,7 +105,7 @@ export const parseAuthnRequest = async (
       sp = samlify.ServiceProvider({ metadata: spEntity.rawXml });
     } else {
       // Create a minimal SP for validation
-      const certificateInfo = generateSelfSignedCertificate('./certs');
+      generateSelfSignedCertificate('./certs'); // Ensure certs exist
       sp = samlify.ServiceProvider({
         entityID: SAML_CONFIG.issuer,
         authnRequestsSigned: false,
@@ -147,14 +147,14 @@ export const createLoginResponse = async (
     const sp = samlify.ServiceProvider({ metadata: spEntity.rawXml });
 
     // Create SAML attributes
-    const attributes = {
+    const attributes: { [key: string]: any } = {
       email: user.email,
       name: user.displayName || user.email,
       uid: user.id,
     };
 
     // Create login response
-    const { context } = idp.createLoginResponse(
+    const result: any = idp.createLoginResponse(
       sp,
       {
         extract: {
@@ -168,7 +168,7 @@ export const createLoginResponse = async (
       attributes
     );
 
-    return { context };
+    return { context: result.context || result };
   } catch (error) {
     console.error('Error creating login response:', error);
     throw error;
