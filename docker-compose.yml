@@ -1,0 +1,66 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: saml-postgres
+    environment:
+      POSTGRES_USER: samluser
+      POSTGRES_PASSWORD: samlpass
+      POSTGRES_DB: samldb
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U samluser -d samldb"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: saml-backend
+    environment:
+      DATABASE_URL: postgresql://samluser:samlpass@postgres:5432/samldb?schema=public
+      JWT_SECRET: your-super-secret-jwt-key-change-this-in-production
+      JWT_EXPIRES_IN: 7d
+      PORT: 3001
+      NODE_ENV: production
+      SAML_ISSUER: http://localhost:3001
+      SAML_CALLBACK_URL: http://localhost:3001/saml/acs
+      SAML_IDP_SSO_URL: http://localhost:3001/saml/idp/sso
+      SAML_ENTRY_POINT: http://localhost:3001/saml/login
+      FRONTEND_URL: http://localhost:5173
+    ports:
+      - "3001:3001"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - saml_certs:/app/certs
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: saml-frontend
+    environment:
+      VITE_API_URL: http://localhost:3001
+    ports:
+      - "5173:80"
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:
+    driver: local
+  saml_certs:
+    driver: local
