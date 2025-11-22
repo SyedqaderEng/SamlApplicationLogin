@@ -12,12 +12,14 @@ COPY tsconfig.json ./
 # Install dependencies
 RUN npm install
 
-# Copy source code
-COPY src ./src
+# Copy Prisma schema
+COPY prisma ./prisma
 
 # Generate Prisma client
-COPY src/db/schema.prisma ./prisma/schema.prisma
 RUN npx prisma generate
+
+# Copy source code
+COPY src ./src
 
 # Build TypeScript
 RUN npm run build
